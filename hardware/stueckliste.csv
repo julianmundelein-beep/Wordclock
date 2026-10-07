@@ -1,0 +1,10 @@
+Ref;Bauteil;Wert/Typ;Menge;Status
+J1;Netzteil;Mean Well GST60A05-P1J (5 V / 6 A);1;vorhanden
+F1;Sicherung;10 A träge;1;fehlt
+S1;Schalter;Ein/Aus;1;vorhanden
+C1;Elektrolytkondensator;1000 µF / >= 6,3 V;1;vorhanden
+U1;Mikrocontroller;Wemos D1 mini (ESP8266);1;vorhanden
+U2;Level Shifter;74HCT125;1;vorhanden
+R1;Widerstand;220 Ohm;1;vorhanden
+LED1..n;LED-Streifen;adressierbar 5 V (z. B. WS2812B);1;vorhanden
+U3;Echtzeituhr;DS3231 RTC-Modul;1;fehlt
