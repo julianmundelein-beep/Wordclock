@@ -1,0 +1,10 @@
+Ref;Part;Value/Type;Qty;Status
+J1;Power supply;Mean Well GST60A05-P1J (5 V / 6 A);1;available
+F1;Fuse;10 A slow-blow;1;missing
+S1;Switch;On/Off;1;available
+C1;Electrolytic capacitor;1000 uF / >= 6.3 V;1;available
+U1;Microcontroller;Wemos D1 mini (ESP8266);1;available
+U2;Level shifter;74HCT125;1;available
+R1;Resistor;220 Ohm;1;available
+LED1..n;LED strip;addressable 5 V;1;available
+U3;Real-time clock;DS3231 RTC module;1;missing

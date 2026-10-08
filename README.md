@@ -1,69 +1,39 @@
 # Wortuhr
 
-Selbstgebaute Wortuhr auf Basis eines **Wemos D1 mini (ESP8266)** und eines adressierbaren 5-V-LED-Streifens. Die Uhrzeit kommt per WLAN (NTP), später zusätzlich aus einem DS3231-RTC-Modul, und wird als Text angezeigt („ES IST VIERTEL NACH DREI“).
+An independently built word clock, documented as a record of my own project.
 
-Als Firmware wird [ESPWortuhr/Wortuhr](https://github.com/ESPWortuhr/Wortuhr) verwendet (PlatformIO, Env `ESP8266`). Die Datenleitung liegt dort standardmäßig auf `RX`/GPIO3 – passend zu diesem Schaltplan.
+This repository brings together the files and notes from my Wortuhr build: electronics, 3D-print files, firmware, photos, and project documentation. It describes what I built and the choices I made along the way; it is not intended to be a step-by-step assembly guide.
 
-## Schaltplan
+![Schematic](electronics/schematic/schaltplan.svg)
 
-![Schaltplan](hardware/schaltplan.svg)
+> **Project details in progress:** Hardware, software, dimensions, and build history will be added as they are documented. See the [build report](BUILD_REPORT.md) for the current notes and TODOs.
 
-Ursprüngliche Handskizze: [`hardware/schaltplan_skizze.png`](hardware/schaltplan_skizze.png)
+## At a glance
 
-### Funktionsprinzip
+- **Controller:** Wemos D1 mini (ESP8266)
+- **Lighting:** addressable 5 V LED strip, driven from `RX`/GPIO3 via a 74HCT125 level shifter
+- **Power:** Mean Well GST60A05-P1J, 5 V
+- **Front:** stainless-steel panel ([DXF](fabrication/stainless-front-panel/))
+- **Firmware:** [OpenWordClock-Software](https://github.com/openclock/OpenWordClock-Software)
 
-- **Versorgung:** Das 5-V-Netzteil (J1) speist über Sicherung F1 und Schalter S1 die gemeinsame +5-V-Schiene für ESP, Level Shifter und LEDs.
-- **Pufferung:** C1 (1000 µF) fängt Einschaltströme und Lastsprünge der LEDs ab.
-- **Datenleitung:** Der ESP8266 arbeitet mit 3,3 V, die LEDs erwarten 5-V-Pegel. Der 74HCT125 (U2) hebt das Signal von `RX`/GPIO3 auf 5 V an (HCT-Eingang: V<sub>IH</sub> ≥ 2,0 V). Nur Gatter 1 wird genutzt, `1OE` liegt fest auf GND (Ausgang immer aktiv).
-- **R1 (220 Ω)** in der Datenleitung dämpft Reflexionen und schützt den ersten LED-Eingang.
+## Repository contents
 
-## Stückliste
+| Folder or file | Contents |
+| --- | --- |
+| [`electronics/schematic/`](electronics/schematic/) | Schematic (SVG/PNG), original sketch, bill of materials, wiring |
+| [`electronics/pcb/`](electronics/pcb/) | PCB design files and related notes |
+| [`3d-print/deckplate/`](3d-print/deckplate/) | Deckplate file(s); source and permission details are still to be documented |
+| [`3d-print/enclosure/`](3d-print/enclosure/) | Enclosure and housing files |
+| [`3d-print/other-parts/`](3d-print/other-parts/) | Other 3D-printed parts, including `komplette_Grundplatte_.stl` |
+| [`fabrication/stainless-front-panel/`](fabrication/stainless-front-panel/) | `EdelstahlFrontV6.dxf`, the stainless-front-panel drawing |
+| [`firmware/`](firmware/) | Firmware source reference and hardware-relevant settings |
+| [`photos/build/`](photos/build/) | Photos from the build process |
+| [`photos/finished/`](photos/finished/) | Photos of the completed clock |
+| [`docs/`](docs/) | Supporting project notes |
+| [`BUILD_REPORT.md`](BUILD_REPORT.md) | Personal project report and build notes |
 
-Auch als CSV: [`hardware/stueckliste.csv`](hardware/stueckliste.csv)
+Some folders are currently empty and are included to establish a place for project files as they are added.
 
-| Ref. | Bauteil | Wert / Typ | Status |
-|------|---------|-----------|--------|
-| J1 | Netzteil | Mean Well GST60A05-P1J, 5 V / 6 A | ✅ vorhanden |
-| F1 | Sicherung | 10 A träge | ❌ fehlt |
-| S1 | Schalter | Ein/Aus | ✅ vorhanden |
-| C1 | Elektrolytkondensator | 1000 µF, ≥ 6,3 V | ✅ vorhanden |
-| U1 | Mikrocontroller | Wemos D1 mini (ESP8266) | ✅ vorhanden |
-| U2 | Level Shifter | 74HCT125 | ✅ vorhanden |
-| R1 | Widerstand | 220 Ω | ✅ vorhanden |
-| LED1…n | LED-Streifen | adressierbar, 5 V (z. B. WS2812B) | ✅ vorhanden |
-| U3 | Echtzeituhr | DS3231 RTC-Modul | ❌ fehlt (noch nicht im Schaltplan) |
+## Licensing
 
-## Verdrahtung
-
-| Von | Nach | Netz |
-|-----|------|------|
-| J1 + | F1 → S1 → +5-V-Schiene | +5 V |
-| +5 V | U1 `5V`, U2 Pin 14 (VCC), LED `+5V`, C1 + | +5 V |
-| J1 − | U1 `G`, U2 Pin 7 (GND), U2 Pin 1 (`1OE`), LED `GND`, C1 − | GND |
-| U1 `RX` (GPIO3) | U2 Pin 2 (`1A`) | Daten 3,3 V |
-| U2 Pin 3 (`1Y`) | R1 → LED `DIN` | Daten 5 V |
-
-## Offene Punkte
-
-- [ ] **Sicherung F1** beschaffen und direkt hinter J1 einsetzen.
-- [ ] **DS3231 RTC** ergänzen: I²C an `D2`/GPIO4 (SDA) und `D1`/GPIO5 (SCL), Versorgung 3,3 V.
-- [ ] **Unbenutzte Gatter des 74HCT125 beschalten** (CMOS-Eingänge nicht offen lassen): `2OE`, `3OE`, `4OE` (Pins 4, 10, 13) auf +5 V, `2A`, `3A`, `4A` (Pins 5, 9, 12) auf GND.
-- [ ] **100-nF-Keramikkondensator** direkt zwischen U2 Pin 14 und Pin 7.
-
-## Hinweise
-
-- `RX`/GPIO3 ist gleichzeitig der UART-Empfang des ESP8266 – serielle Eingaben über USB gehen damit nicht, Flashen funktioniert weiterhin. Vorteil: GPIO3 ist der DMA-Pin der NeoPixelBus-Library und liefert sauberes Timing.
-- Der D1 mini hängt über `5V` direkt an der Versorgung. Beim Flashen per USB möglichst das Netzteil ausschalten (S1), damit sich USB- und Netzteil-5 V nicht gegenseitig speisen.
-- Bei vielen LEDs die 5 V zusätzlich am Ende des Streifens einspeisen (Power Injection), um Spannungsabfall zu vermeiden.
-
-## Projektstruktur
-
-```
-wortuhr/
-├── README.md
-└── hardware/
-    ├── schaltplan.svg          # Schaltplan (Vektor)
-    ├── schaltplan.png          # Schaltplan (Raster)
-    ├── schaltplan_skizze.png   # ursprüngliche Handskizze
-    └── stueckliste.csv         # Stückliste
-```
+**TODO:** Choose and document a license for the original project files. No license has been selected yet. The origin and usage terms for any third-party files, including the deckplate, must be confirmed before describing or relicensing them. See [`LICENSE_TODO.md`](LICENSE_TODO.md).
