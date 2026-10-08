@@ -1,4 +1,4 @@
-# Wortuhr
+# Wordclock
 
 An independently built word clock, documented as a record of my own project.
 
