@@ -41,7 +41,7 @@ The schematic was redrawn by hand as SVG from the sketch; there is no EDA source
 | U1 `RX` (GPIO3) | U2 pin 2 (`1A`) | Data 3.3 V |
 | U2 pin 3 (`1Y`) | R1 → LED `DIN` | Data 5 V |
 
-The data pin matches the firmware: `LED_PIN 3` in `include/config.h` of OpenWordClock-Software.
+The data pin matches the firmware (`LED_PIN 3`, see [`firmware/`](../../firmware/)).
 
 ## Open points
 
